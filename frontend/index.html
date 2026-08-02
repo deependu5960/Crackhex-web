@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrackHex Engine | Cyber Decryption Suite</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'JetBrains Mono', monospace; background-color: #030712; color: #f3f4f6; }
+        
+        .cyber-card {
+            background: rgba(10, 16, 31, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .glow-cyan { text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
+        .glow-green { text-shadow: 0 0 10px rgba(0, 255, 102, 0.5); }
+
+        .pill-active {
+            background-color: rgba(0, 240, 255, 0.15) !important;
+            color: #00f0ff !important;
+            border-color: #00f0ff !important;
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+        }
+
+        .cyber-button {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2) 0%, rgba(0, 255, 102, 0.2) 100%);
+            border: 1px solid #00f0ff;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .cyber-button:hover {
+            box-shadow: 0 0 25px rgba(0, 255, 102, 0.4);
+            border-color: #00ff66;
+            transform: translateY(-1px);
+        }
+
+        ::-webkit-scrollbar { height: 4px; width: 6px; }
+        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-thumb { background: #00f0ff; border-radius: 3px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-4 md:p-8 max-w-5xl mx-auto">
+
+    <div class="space-y-6">
+
+        <!-- Top Navigation Header -->
+        <header class="cyber-card rounded-2xl px-6 py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div class="flex items-center space-x-5">
+                <img src="logo.png" alt="CrackHex Logo" class="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-[0_0_12px_rgba(0,240,255,0.4)]">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-black text-white tracking-wider glow-cyan">
+                        CRACKHEX 
+                        <span class="text-xs text-green-400 font-normal border border-green-500/40 px-2 py-0.5 rounded ml-2 align-middle">v2.0 PRO</span>
+                    </h1>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-6 text-xs text-gray-400 font-mono">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-green-400 animate-ping"></span>
+                    <span class="text-green-400">API: Connected</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                    <span class="text-cyan-400">Cache: Active</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- FULL-WIDTH SUCCESS HERO BANNER -->
+        <section id="resultHeroCard" class="hidden cyber-card rounded-2xl p-6 md:p-8 border-l-8 border-l-green-400 bg-gradient-to-r from-green-950/40 via-slate-900 to-slate-900 shadow-2xl transition-all duration-300">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-gray-800">
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <span class="inline-block w-3 h-3 rounded-full bg-green-400 animate-ping"></span>
+                        <span class="text-xs font-bold uppercase tracking-widest text-green-400 glow-green">Target Password Recovered</span>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-4 pt-1">
+                        <span id="heroPlaintext" class="text-3xl md:text-4xl font-black text-white tracking-wider bg-green-500/10 px-5 py-2 rounded-xl border border-green-500/40 glow-green select-all">
+                            --
+                        </span>
+                        
+                        <button onclick="copyToClipboard()" id="copyBtn" class="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-cyan-400 border border-cyan-500/50 px-4 py-2.5 rounded-xl text-xs font-bold transition duration-200">
+                            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                            <span id="copyBtnText">Copy Result</span>
+                        </button>
+                    </div>
+                </div>
+
+                <span id="heroSource" class="self-start md:self-auto text-xs px-4 py-1.5 rounded-full bg-green-500/20 text-green-300 font-bold border border-green-500/30">
+                    Match Found
+                </span>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6 text-xs">
+                <div>
+                    <span class="text-gray-400 block mb-1">Algorithm</span>
+                    <span id="heroAlgo" class="text-cyan-400 font-bold text-base">--</span>
+                </div>
+                <div>
+                    <span class="text-gray-400 block mb-1">Total Evaluated</span>
+                    <span id="heroAttempts" class="text-cyan-400 font-bold text-base">--</span>
+                </div>
+                <div>
+                    <span class="text-gray-400 block mb-1">Duration</span>
+                    <span id="heroTime" class="text-cyan-400 font-bold text-base">--</span>
+                </div>
+                <div>
+                    <span class="text-gray-400 block mb-1">Target Hash</span>
+                    <span id="heroHash" class="text-gray-300 text-xs truncate block max-w-[200px]" title="">--</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- MAIN FORM DASHBOARD -->
+        <main class="cyber-card rounded-2xl p-6 md:p-8 space-y-8">
+            
+            <!-- 1. Target Hash Input -->
+            <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <label class="text-xs font-bold text-cyan-400 uppercase tracking-widest glow-cyan">Target Hash String</label>
+                    <span class="text-[10px] text-gray-500">Supports MD5, SHA-256, Bcrypt, NTLM, Argon2, Drupal 7 & Crypt</span>
+                </div>
+                <input id="hashInput" type="text" placeholder="Paste target hash string here..." 
+                       class="w-full bg-black/80 border-2 border-gray-800 p-5 text-base md:text-lg rounded-xl text-green-400 placeholder-gray-600 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 focus:outline-none font-mono transition">
+            </div>
+
+            <!-- 2. Algorithm Selection -->
+            <div class="space-y-3">
+                <label class="text-xs font-bold text-cyan-400 uppercase tracking-widest glow-cyan">Algorithm Override</label>
+                <div class="flex items-center space-x-2 overflow-x-auto pb-2 font-mono text-xs">
+                    <button onclick="selectAlgo('')" id="algo_AUTO" class="pill-active px-4 py-2.5 rounded-xl border border-gray-800 font-bold whitespace-nowrap transition">
+                        Auto Detect
+                    </button>
+                    <button onclick="selectAlgo('MD5')" id="algo_MD5" class="px-4 py-2.5 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 transition whitespace-nowrap">MD5</button>
+                    <button onclick="selectAlgo('LM')" id="algo_LM" class="px-4 py-2.5 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 transition whitespace-nowrap">LM</button>
+                    <button onclick="selectAlgo('NTLM')" id="algo_NTLM" class="px-4 py-2.5 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 transition whitespace-nowrap">NTLM</button>
+                    <button onclick="selectAlgo('MD4')" id="algo_MD4" class="px-4 py-2.5 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 transition whitespace-nowrap">MD4</button>
+                    <button onclick="selectAlgo('BCRYPT')" id="algo_BCRYPT" class="px-4 py-2.5 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 transition whitespace-nowrap">Bcrypt</button>
+                    <button onclick="selectAlgo('SHA256')" id="algo_SHA256" class="px-4 py-2.5 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 transition whitespace-nowrap">SHA-256</button>
+                    <button onclick="selectAlgo('SHA1')" id="algo_SHA1" class="px-4 py-2.5 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 transition whitespace-nowrap">SHA-1</button>
+                    <button onclick="selectAlgo('SHA512')" id="algo_SHA512" class="px-4 py-2.5 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 transition whitespace-nowrap">SHA-512</button>
+                    <button onclick="selectAlgo('MD5-CRYPT')" id="algo_MD5-CRYPT" class="px-4 py-2.5 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 transition whitespace-nowrap">MD5-Crypt</button>
+                    <button onclick="selectAlgo('SHA256-CRYPT')" id="algo_SHA256-CRYPT" class="px-4 py-2.5 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 transition whitespace-nowrap">SHA256-Crypt</button>
+                    <button onclick="selectAlgo('SHA512-CRYPT')" id="algo_SHA512-CRYPT" class="px-4 py-2.5 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 transition whitespace-nowrap">SHA512-Crypt</button>
+                    <button onclick="selectAlgo('ARGON2')" id="algo_ARGON2" class="px-4 py-2.5 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 transition whitespace-nowrap">Argon2</button>
+                    <button onclick="selectAlgo('DRUPAL-7')" id="algo_DRUPAL-7" class="px-4 py-2.5 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 transition whitespace-nowrap">Drupal 7</button>
+                </div>
+            </div>
+
+            <!-- 3. Attack Vector Modes -->
+            <div class="space-y-3">
+                <label class="text-xs font-bold text-cyan-400 uppercase tracking-widest glow-cyan">Execution Strategy</label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <button onclick="selectMode(3)" id="tabMode3" class="pill-active p-4 rounded-xl border border-gray-800 text-left transition space-y-1">
+                        <div class="font-bold text-sm">RockYou Wordlist Sweep</div>
+                        <div class="text-xs opacity-70">Sequential pass over complete rockyou.txt dictionary</div>
+                    </button>
+                    
+                    <button onclick="selectMode(1)" id="tabMode1" class="p-4 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 text-left transition space-y-1">
+                        <div class="font-bold text-sm">Filtered Wordlist</div>
+                        <div class="text-xs opacity-70">Filter RockYou wordlist by exact length or prefix</div>
+                    </button>
+
+                    <button onclick="selectMode(2)" id="tabMode2" class="p-4 rounded-xl border border-gray-800 bg-black/50 text-gray-400 hover:text-cyan-400 text-left transition space-y-1">
+                        <div class="font-bold text-sm">Custom Generator</div>
+                        <div class="text-xs opacity-70">Generate permutations from custom target seed words</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dynamic Filter Controls -->
+            <div id="filterContainer" class="hidden border-t border-gray-800 pt-6 space-y-4 transition">
+                
+                <div id="customWordsBox" class="hidden space-y-2">
+                    <label class="block text-xs font-bold text-gray-300">Target Seed Words</label>
+                    <input id="customWords" type="text" placeholder="Enter seed words separated by commas (e.g. iloveyou, admin, 2026)" 
+                           class="w-full bg-black/80 border border-gray-800 p-3.5 text-sm rounded-xl text-green-400 focus:border-cyan-400 focus:outline-none">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-gray-300">Filtering Parameters</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                        <button onclick="selectFilterType(0)" id="filterBtn0" class="pill-active py-2.5 px-3 rounded-lg border border-gray-800 font-bold">No Filter</button>
+                        <button onclick="selectFilterType(1)" id="filterBtn1" class="py-2.5 px-3 rounded-lg border border-gray-800 bg-black/50 text-gray-400 font-bold">Match Length</button>
+                        <button onclick="selectFilterType(2)" id="filterBtn2" class="py-2.5 px-3 rounded-lg border border-gray-800 bg-black/50 text-gray-400 font-bold">Match Prefix</button>
+                        <button onclick="selectFilterType(3)" id="filterBtn3" class="py-2.5 px-3 rounded-lg border border-gray-800 bg-black/50 text-gray-400 font-bold">Match Both</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                    <div id="lengthInputBox" class="hidden space-y-1">
+                        <label class="block text-xs text-gray-400">Exact Password Length</label>
+                        <input id="pwdLen" type="number" placeholder="8" class="w-full bg-black/80 border border-gray-800 p-3 text-sm rounded-xl text-green-400 focus:border-cyan-400 focus:outline-none">
+                    </div>
+                    <div id="prefixInputBox" class="hidden space-y-1">
+                        <label class="block text-xs text-gray-400">Starting Prefix</label>
+                        <input id="pwdPrefix" type="text" placeholder="admin" class="w-full bg-black/80 border border-gray-800 p-3 text-sm rounded-xl text-green-400 focus:border-cyan-400 focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action & Progress Section -->
+            <div class="space-y-4 pt-4 border-t border-gray-800">
+                
+                <div class="flex gap-3">
+                    <button onclick="executeCrack()" id="crackBtn" class="cyber-button flex-grow py-4 rounded-xl font-bold text-sm tracking-widest text-cyan-300 flex justify-center items-center gap-2 uppercase glow-cyan">
+                        Crack Password
+                    </button>
+                    
+                    <button onclick="cancelTask()" id="cancelBtn" class="hidden bg-red-950/60 hover:bg-red-900 border border-red-500/50 text-red-300 px-6 py-4 rounded-xl font-bold text-xs tracking-wider transition">
+                        Cancel Task
+                    </button>
+                </div>
+
+                <!-- Live Progress Indicator -->
+                <div id="progressBox" class="hidden cyber-card rounded-xl p-4 space-y-2 border-gray-800">
+                    <div class="flex justify-between items-center text-xs">
+                        <span id="statusMessage" class="font-bold text-cyan-400">Initializing Task...</span>
+                        <span id="attemptCount" class="text-green-400 font-bold">0 Evaluations</span>
+                    </div>
+                    <div class="w-full bg-black/80 rounded-full h-2 overflow-hidden border border-gray-800">
+                        <div id="progressBar" class="bg-cyan-400 h-full rounded-full transition-all duration-300 w-full animate-pulse"></div>
+                    </div>
+                </div>
+
+                <div id="errorMessage" class="hidden p-4 rounded-xl bg-red-950/40 border border-red-500/30 text-red-400 text-xs text-center font-bold"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentMode = 3;
+        let selectedAlgo = "";
+        let currentFilterType = 0;
+        let activeStreamController = null;
+
+        const algoList = ['', 'MD5', 'LM', 'NTLM', 'MD4', 'BCRYPT', 'SHA256', 'SHA1', 'SHA512', 'MD5-CRYPT', 'SHA256-CRYPT', 'SHA512-CRYPT', 'ARGON2', 'DRUPAL-7'];
+
+        function cleanSystemMessage(text) {
+            if (!text) return "";
+            return text
+                .replace(/^\[[\*\+\-\!]\]\s*/, "")
+                .replace(/^\[SYSTEM\]\s*/i, "");
+        }
+
+        function selectAlgo(algo) {
+            selectedAlgo = algo;
+            algoList.forEach(a => {
+                const btn = document.getElementById(`algo_${a || 'AUTO'}`);
+                if (btn) btn.classList.toggle('pill-active', a === algo);
+            });
+        }
+
+        function selectMode(mode) {
+            currentMode = mode;
+            [1, 2, 3].forEach(m => {
+                const tab = document.getElementById(`tabMode${m}`);
+                tab.classList.toggle('pill-active', m === mode);
+            });
+
+            const filterContainer = document.getElementById('filterContainer');
+            const customWordsBox = document.getElementById('customWordsBox');
+
+            if (mode === 3) {
+                filterContainer.classList.add('hidden');
+            } else {
+                filterContainer.classList.remove('hidden');
+                customWordsBox.classList.toggle('hidden', mode !== 2);
+            }
+        }
+
+        function selectFilterType(type) {
+            currentFilterType = type;
+            [0, 1, 2, 3].forEach(t => {
+                const btn = document.getElementById(`filterBtn${t}`);
+                if (btn) btn.classList.toggle('pill-active', t === type);
+            });
+
+            const lengthBox = document.getElementById('lengthInputBox');
+            const prefixBox = document.getElementById('prefixInputBox');
+
+            lengthBox.classList.toggle('hidden', type !== 1 && type !== 3);
+            prefixBox.classList.toggle('hidden', type !== 2 && type !== 3);
+        }
+
+        function copyToClipboard() {
+            const plaintext = document.getElementById('heroPlaintext').innerText.trim();
+            if (!plaintext || plaintext === '--') return;
+
+            navigator.clipboard.writeText(plaintext).then(() => {
+                const copyBtnText = document.getElementById('copyBtnText');
+                copyBtnText.innerText = "Copied!";
+                setTimeout(() => { copyBtnText.innerText = "Copy Result"; }, 2000);
+            });
+        }
+
+        function cancelTask() {
+            if (activeStreamController) {
+                activeStreamController.abort();
+                activeStreamController = null;
+            }
+            document.getElementById('progressBox').classList.add('hidden');
+            document.getElementById('cancelBtn').classList.add('hidden');
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.innerText = "Task cancelled by user. Ready for next input.";
+            errorMessage.classList.remove('hidden');
+        }
+
+        async function executeCrack() {
+            const hashVal = document.getElementById('hashInput').value.trim();
+            const progressBox = document.getElementById('progressBox');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const statusMessage = document.getElementById('statusMessage');
+            const attemptCount = document.getElementById('attemptCount');
+            const resultHeroCard = document.getElementById('resultHeroCard');
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (!hashVal) {
+                errorMessage.innerText = "Please supply a valid target hash string.";
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+
+            if (activeStreamController) {
+                activeStreamController.abort();
+            }
+            activeStreamController = new AbortController();
+
+            errorMessage.classList.add('hidden');
+            resultHeroCard.classList.add('hidden');
+            progressBox.classList.remove('hidden');
+            cancelBtn.classList.remove('hidden');
+            statusMessage.innerText = "Connecting to API Stream...";
+            attemptCount.innerText = "0 Evaluations";
+
+            const payload = {
+                hash_value: hashVal,
+                algo: selectedAlgo || null,
+                mode: currentMode,
+                filter_type: currentFilterType,
+                pwd_len: parseInt(document.getElementById('pwdLen').value) || null,
+                prefix: document.getElementById('pwdPrefix').value || null,
+                custom_words: document.getElementById('customWords').value.split(',').map(s => s.trim()).filter(Boolean)
+            };
+
+            try {
+                const response = await fetch('http://localhost:8000/api/crack', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    signal: activeStreamController.signal
+                });
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+
+                    for (let line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const event = JSON.parse(line.replace('data: ', ''));
+                            
+                            if (event.status === "info" || event.status === "progress") {
+                                statusMessage.innerText = cleanSystemMessage(event.message);
+                            }
+
+                            if (event.message.includes("Tested") || event.message.includes("candidates")) {
+                                const match = event.message.match(/(?:Tested|Checked)\s+([\d,]+)/i);
+                                if (match) attemptCount.innerText = `${match[1]} Evaluations`;
+                            }
+
+                            if (event.data && event.data.plaintext) {
+                                document.getElementById('heroPlaintext').innerText = event.data.plaintext;
+                                document.getElementById('heroAlgo').innerText = event.data.algo || 'N/A';
+                                document.getElementById('heroAttempts').innerText = event.data.attempts ? event.data.attempts.toLocaleString() : '1 (Database Cache)';
+                                document.getElementById('heroTime').innerText = event.data.time ? `${event.data.time}s` : 'Instant';
+                                document.getElementById('heroHash').innerText = hashVal;
+                                document.getElementById('heroHash').title = hashVal;
+                                document.getElementById('heroSource').innerText = event.data.cached ? 'Database Cache Match' : 'Wordlist Match';
+                                
+                                resultHeroCard.classList.remove('hidden');
+                                progressBox.classList.add('hidden');
+                                cancelBtn.classList.add('hidden');
+                                activeStreamController = null;
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }
+
+                            if (event.status === "failed") {
+                                progressBox.classList.add('hidden');
+                                cancelBtn.classList.add('hidden');
+                                activeStreamController = null;
+                                errorMessage.innerText = "Exhausted all candidates. Password not found in specified parameters.";
+                                errorMessage.classList.remove('hidden');
+                            } else if (event.status === "error") {
+                                progressBox.classList.add('hidden');
+                                cancelBtn.classList.add('hidden');
+                                activeStreamController = null;
+                                errorMessage.innerText = cleanSystemMessage(event.message);
+                                errorMessage.classList.remove('hidden');
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    // Task was manually cancelled via AbortController
+                    return;
+                }
+                progressBox.classList.add('hidden');
+                cancelBtn.classList.add('hidden');
+                activeStreamController = null;
+                errorMessage.innerText = "API Service Unreachable. Please verify that backend server (app.py) is running.";
+                errorMessage.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
