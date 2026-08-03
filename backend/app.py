@@ -146,6 +146,8 @@ async def crack_stream_generator(req: CrackRequest, http_request: Request):
     # 3. Execution Crack Loop with Disconnect Check
     count = 0
     start_time = time.time()
+    last_update_time = time.time()
+    update_interval = 0.3  # Send update every 300ms for smooth UI
     
     for candidate in word_generator():
         # Check if the user clicked "Cancel" on the frontend
@@ -155,9 +157,12 @@ async def crack_stream_generator(req: CrackRequest, http_request: Request):
 
         count += 1
         
-        if count % 20000 == 0:
-            yield send_event("progress", f"Tested {count:,} candidates...")
+        # Send progress update every 1,000 attempts OR every 300ms
+        # This ensures smooth UI updates without overwhelming the system
+        if count % 1000 == 0 or (time.time() - last_update_time) > update_interval:
+            yield send_event("progress", f"Tested {count:,} combinations...")
             await asyncio.sleep(0.0001)
+            last_update_time = time.time()
 
         if verify_hash(algo_to_use, candidate, target_hash):
             elapsed = round(time.time() - start_time, 2)
@@ -170,7 +175,7 @@ async def crack_stream_generator(req: CrackRequest, http_request: Request):
             save_to_database_cache(target_hash, algo_to_use, candidate)
             return
 
-    yield send_event("failed", "Exhausted all candidates. Hash not found.")
+    yield send_event("failed", "Exhausted all combinations. Password not found.")
 
 @app.post("/api/crack")
 async def start_cracking(req: CrackRequest, http_request: Request):
